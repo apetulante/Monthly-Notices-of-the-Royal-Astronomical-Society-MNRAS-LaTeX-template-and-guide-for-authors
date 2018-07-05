@@ -138,73 +138,72 @@ And this is how I'd cite stuff when I finally read some papers: \citet{Others201
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
-	\includegraphics[width=\textwidth]{Figures/combined_distributions_logBin}
+	\includegraphics[width=\textwidth]{Figures/combined_distributions_logbin}
     \caption{Distributions of the merging interactions within our sample, in two different two-dimensional spaces. The left panel shows the distribution of mergers in the space of the host mass (x-axis) and the mass ratio (y-axis) of the interaction. The right panel shows the distribution of mergers in the space of the scale of initial entry of the subhalo (x-axis) and again, the mass ratio of the interaction on the y-axis. Within each hexagonal bin, the counts of interactions are shown, on a logarithm scale, by the colorbar. Histograms show the one-dimensional distribution of host masses (above the left panel), scale of entry (above the right panel) and mass ratios to the right of the right panel). Most interactions occur at lower mass ratios and for smaller host halos, but the spaces are still well-spanned over a range of interactions in both panels. }
     \label{fig:combined_distributions_logBin}
 \end{figure*}
 
 \section{Machine Learning Methods}
-Discussion and description of the various machine learning models that were used. Might also contain subsections? For data, for each method, for feature selection? Or for each type of method? The second way is how I did it here but it`s definitely not necessarily the best way. 
-
+Discussion and description of the various machine learning models that were used. I have it with subsections here for the different methods although I don't know if that makes complete sense. Discuss each of the two methods (RF for survival and GBR for all the regression problems) in enough detail that 
 
 \subsection{Random Forests}
 \label{sec:rf} % used for referring to this section from elsewhere
 \begin{itemize}
-	\item Basic description of the algorithm and how it works.
-    \item Advantages and disadvantages.
-    \item regression vs classification?
+	\item Basic description of the algorithm and how it works. What parameters are there to play with and what that changes about the way that the model does its thing.
+    \item Advantages and disadvantages. How easy it can be to overfit given the smaller scope of the problem, dangers of underfitting when trying to trim down parameters, how different parameters of the model can constrain the model to only use some features. Advantages over simpler models.
+    \item Applications to this specific problem (binary classification)
 \end{itemize}
 
 \subsection{Gradient Boosting Regressors}
 \label{sec:gbr} % used for referring to this section from elsewhere
 \begin{itemize}
-	\item Basic description of the algorithm and how it works.
-    \item Advantages and disadvantages.
-    \item regression vs classification?
+	\item Basic description of the algorithm and how it works. What parameters are there to play with and what that changes about the way that the model does its thing.
+    \item Advantages and disadvantages. How easy it can be to overfit given the smaller scope of the problem, dangers of underfitting when trying to trim down parameters, how different parameters of the model can constrain the model to only use some features. Advantages over simpler models.
+    \item Applications and such to this specific problem (regression problems)
 \end{itemize}
 
-\subsection{Neural Networks}
-\label{sec:nn} % used for referring to this section from elsewhere
+\subsection{Other Models}
+\label{sec:other models} % used for referring to this section from elsewhere
+
+\textit{Not sure if this really needs to be its own subsection at all, or if casually mentioning this type of stuff in the previous sections is sufficient.}
 \begin{itemize}
-	\item Basic description of the algorithm and how it works.
-    \item Advantages and disadvantages.
-    \item regression vs classification?
+	\item Description/mention of some other popular/common models. Both more complicated (like neural nets) and less complicated (like KNN)
+    \item What we tried and how much it improved/didn't improve? Reason we went with GBR's for all regressors and an RF for the survival problem?
+
 \end{itemize}
 
 \subsection{Feature Selection}
 \label{sec:feature selection} % used for referring to this section from elsewhere
+
+\textit{Description of how we reduced/ordered the features. The variation tree procedure for selecting the features and ordering the first few most important ones. How we decided that of all of the parameters we did and could take, no need for more than a few to make good predictions.}
+
 \begin{itemize}
-    \item Initially, our sample contained \textbf{INSERT NUMBER} parameters (or features) to describe each interaction. Reducing the dimensionality of the data? Checks for important and unimportant parameters. How we are sure that the number of features we gave the model is correct and optimal, how were we able to get rid of some of the unimportant parameters. 
-    \item Description of the different methods we used to check for dimensionality reduction?
-    \item According to selected features, what do the best spaces look like for some of the things we want to predict? Shown for survival and mass loss in \ref{fig:bestSpaces_vartree}.
+    \item \textit{How we reduced from like 50 parameters to 20? Or should i not go into detail about that.} Initially, our sample contained \textbf{INSERT NUMBER} parameters (or features) to describe each interaction. Reducing the dimensionality of the data? Checks for important and unimportant parameters. How we are sure that the number of features we gave the model is correct and optimal, how were we able to get rid of some of the unimportant parameters?
+    \item \textit{Description of the variation tree method of selecting the most important parameters.} The basic idea. How it fits with doing machine learning methods that rely on decision trees because the underlying assumptions are similar. Problems with getting too much noise when trying to order beyond 4 parameters. What the metric for amount of variation means and what it tells us.
+    \item \textit{A Table that shows, for the 4 parameters that are selected to be the most important, how much variation is within that parameter and the order of the 4.} Can note already that some of the features show up amongst all things being predicted. Some discussion of whether or not you can tell at this point that some thing being predicted might need an additional parameter (a fifth) or might do well with only 3 (still high variation compared to noise in the last parameter or last chosen parameter close to noise).
+    \item \texit{According to selected features, what do the best 2D spaces look like for the things we want to predict?} Shown for each of the things we're predicting in \ref{fig:bestSpaces}. Discussion of how, for something like survival, it's clear that the prediction will be more straightforward and do well even for one or two features. Discussion for the other things that we're predicting about how it can be harder to see by eye that the feature will be so important, especially in a 2D space.
 \end{itemize}
-    % Best-spaces figure
+% Best-spaces figure
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
-	\includegraphics[width=\textwidth]{Figures/bestSpaces_vartree}
+	\includegraphics[width=\textwidth]{Figures/bestSpaces}
     \caption{Distributions of the predicted quantity of interest with respect to the two parameters that are most responsible for its variations. In each panel, the parameter that causes the most variation is shown on the x-axis, and the parameter that causes the second most variation is shown on the y-axis. In addition, in each panel the colorbar shows the average values of the quantity of interest within a bin. The top left panel shows the fraction of surviving subhalos. The top right panel shows the fraction of subhalo mass that remains for surviving subhalos. The bottom left panel shows the fractional distance of surviving subhalos from their host's center. The bottom right panel shows the elapsed time for a subhalo to merge. In each instance, some pattern of color striation can be seen to represent the importance of the two parameters shown. However, it is clear that the survival of a subhalo is by far the most drastically divided and well-defined by this two-dimensional space. }
-    \label{fig:bestSpaces_vartree}
+    \label{fig:bestSpaces}
 \end{figure*}
 
-?? Discussion of any other models tried that didn't perform as well? Mention that other models were tested or don't mention at all? Talk at all about getting equations from (simpler) models if we wanted to include both? Survival has a straightforward equation that does pretty well, although a non-equation model does better. All of the regression models have no simple solution. Is it worth mentioning/presenting the simple solution?
-
 \section{Results}
-This section will probably be split into subsections, such as Section~\ref{sec:survival} below.
+I was planning on splitting this section into subsections, such as Section~\ref{sec:survival} below. One for each of the quanities we're trying to predict.
 
 \subsection{Survival}
 \label{sec:survival} % used for referring to this section from elsewhere
 
 For the entire sample of subhaloes, we first try to predict whether or not a halo will survive until today (1) or merge particles with the host (0) during its infall.
 \begin{itemize}
-		\item The best method: Show the results of whatever machine learning algorithm worked the BEST. Plots of adding parameters for different tolerances (on the validation set) and explain choices for the fiducial confidence.
-	\item The parameters: the best combination of parameters, other combinations that were found to be good, too. Whether or not those agree with feature selection methods that we used. Present the best order of the parameters, and show how much information is gained by adding each parameter and how it levels off. Explain how we have decided to reduce the full set of data to the smallest subset of parameters.
-    \item With the chosen fiducial tolerance and subset of parameters, show how well the model performs on the test set and report a final accuracy.
-    \item A predictive equation?? Show the logistic regression results and the equation that it produces? I can't remember how well it worked. Not sure if it's even worth mentioning.
-\end{itemize}
-
-\begin{figure*}
+	\item From the variation tree method, what are the 4 most important parameters. What parameters do we add after that and in what order.
+	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:survival_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
+	\begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
@@ -212,7 +211,7 @@ For the entire sample of subhaloes, we first try to predict whether or not a hal
     \caption{Survival.}
     \label{fig:survival_predictions}
 \end{figure*}
-
+    \item The parameters: the best combination of parameters and the fiducial set that you need in order to get the best accuracy you can. Do the feature selection methods that we used seem to show an accurate picture of what features were going to be important. Present the best order of the parameters, and state how much information is gained by adding each parameter and how it levels off. 
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
@@ -221,15 +220,14 @@ For the entire sample of subhaloes, we first try to predict whether or not a hal
     \caption{Mass loss contours.}
     \label{fig:survival_contours}
 \end{figure*}
+\end{itemize}
 
 \subsection{Mass Loss}
 \label{sec:mass loss}
+For only subhalos that survive until redshift zero without being disrupted, we try to predict the mass of the subhalo at redshift zero.
 \begin{itemize}
-	\item The best method: Show the results of whatever machine learning algorithm worked the BEST. Plots of adding parameters for different tolerances (on the validation set) and explain choices for the fiducial confidence.
-	\item The parameters: the best combination of parameters, other combinations that were found to be good, too. Whether or not those agree with feature selection methods that we used. Present the best order of the parameters, and show how much information is gained by adding each parameter and how it levels off. Explain how we have decided to reduce the full set of data to the smallest subset of parameters.
-    \item With the chosen fiducial tolerance and subset of parameters, show how well the model performs on the test set and report a final accuracy.
-\end{itemize}
-
+	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor due to poisson noise of the particles. What accuracy we are trying to get.
+	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
@@ -238,7 +236,8 @@ For the entire sample of subhaloes, we first try to predict whether or not a hal
     \caption{Mass loss.}
     \label{fig:massloss_predictions}
 \end{figure*}
-
+    \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
+	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
@@ -247,24 +246,15 @@ For the entire sample of subhaloes, we first try to predict whether or not a hal
     \caption{Mass loss contours.}
     \label{fig:massloss_contours}
 \end{figure*}
+\end{itemize}
 
-\begin{figure*}
-	% To include a figure from a file named example.*
-	% Allowable file formats are eps or ps if compiling using latex
-	% or pdf, png, jpg if compiling using pdflatex
-	\includegraphics[width=\textwidth]{Figures/time_contours}
-    \caption{Time contours.}
-    \label{fig:time_contours}
-\end{figure*}
 
 \subsection{Final Position}
 \label{sec:position}
+For only subhalos that survive until redshift zero without being disrupted, we try to predict where in their host halo they end up at redshift zero.
 \begin{itemize}
-	\item The best method: Show the results of whatever machine learning algorithm worked the BEST. Plots of adding parameters for different tolerances (on the validation set) and explain choices for the fiducial confidence.
-    \item The parameters: the best combination of parameters, other combinations that were found to be good, too. Whether or not those agree with feature selection methods that we used. Present the best order of the parameters, and show how much information is gained by adding each parameter and how it levels off. Explain how we have decided to reduce the full set of data to the smallest subset of parameters.
-    \item With the chosen fiducial tolerance and subset of parameters, show how well the model performs on the test set and report a final accuracy.
-\end{itemize}
-
+	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor. What accuracy we are trying to get.
+	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
@@ -273,7 +263,8 @@ For the entire sample of subhaloes, we first try to predict whether or not a hal
     \caption{Position.}
     \label{fig:position_predictions}
 \end{figure*}
-
+    \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
+	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
@@ -282,26 +273,33 @@ For the entire sample of subhaloes, we first try to predict whether or not a hal
     \caption{Position contours.}
     \label{fig:position_contours}
 \end{figure*}
+\end{itemize}
 
 \subsection{Merge Time}
 \label{sec:merge time}
+For only subhalos that have merged before redshift zero, we try to predict how long the merger takes.
 \begin{itemize}
-	\item The best method: Show the results of whatever machine learning algorithm worked the BEST. Plots of adding parameters for different tolerances (on the validation set) and explain choices for the fiducial confidence.
-	\item The parameters: the best combination of parameters, other combinations that were found to be good, too. Whether or not those agree with feature selection methods that we used. Present the best order of the parameters, and show how much information is gained by adding each parameter and how it levels off. Explain how we have decided to reduce the full set of data to the smallest subset of parameters.
-    \item With the chosen fiducial tolerance and subset of parameters, show how well the model performs on the test set and report a final accuracy.
-\end{itemize}
-
+	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor. What accuracy we are trying to get.
+	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/time_predictions}
-    \caption{Merge Time.}
+    \caption{Merge time.}
     \label{fig:time_predictions}
 \end{figure*}
-
-\subsection{Access to the Results?}
-Do we want to have there be some way to access the black box/trained model if we can't get an analytical form of the predictions? Do people include parts in their paper about where to find their code or anything? Do people need to be able to find my code somewhere?
+    \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
+	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
+\begin{figure*}
+	% To include a figure from a file named example.*
+	% Allowable file formats are eps or ps if compiling using latex
+	% or pdf, png, jpg if compiling using pdflatex
+	\includegraphics[width=\textwidth]{Figures/time_contours}
+    \caption{Time contours.}
+    \label{fig:time_contours}
+\end{figure*}
+\end{itemize}
 
 \subsection{Some Useful LATEX Stuff - Not part of paper}
 Just some stuff that came with the template that I'll probably need to reference at some point when I have to add Figures and equations and all that to the above sections.
@@ -336,12 +334,13 @@ e.g. Table~\ref{tab:example_table}.
 
 \section{Discussion}
 \begin{itemize}
-	\item Discuss the parameters that were chosen to be important. Are they the same across all outcomes, are they what we expect them to be. Discussion of any that might be surprising/some physically motivated speculation as to why those chosen make or don't make sense.
-    \item What went wrong for the outcomes that can't be predicted very well. Show/Discuss specific cases where outcomes are predicted well/not well. Is there a fundamental difference in the distribution between good/bad predictions in any parameter space? Is there anything common amongst the halos that are predicted poorly for different parameters (are the same haloes predicted poorly across multiple outcomes)
-    \item Possible missing parameters. Anything else that might contribute to the predictions that we haven't included. What do the distributions in parameter space tell us about the ML failing to capture information vs the outcomes having some inherent randomness.
-    \item Robustness of the machine learning results. Investigation of data size to show that we weren't constrained by amount of data. Cost curves during training? ROC curves? Is it possible the model could have done better given a different tuning/training of the ML algorithms? Discussion of possible underfitting/overfitting of the models. Room for improvement in the ML methodology.
-    \item Possible uses/implications of the models for simulation. Is this usable to make predictions for any of the outcomes? If it's not, what does that tell us about the nature of these simulations.
-    \item Possible use/implications for observation. Is there anything we can say about distributions that we can expect around the MW or other galaxies. Discussion of future works related to this?
+	\item \texit{Discuss the parameters that were chosen to be important.} Which seem to be important across all of the predicted quantities and which might be more surprising or less intuitive. Some physically motivated speculation as to why those chosen make or don't make sense?
+    \item What went wrong for the outcomes that can't be predicted very well. Show/Discuss specific cases where outcomes are predicted well/not well? Show the contour plots here? Talk about if there are any common spaces within those contours that are consistently not predicted well. Like things in a mid-scale range (.6) being predicted poorly for pretty much anything you want to know. Is there anything common amongst the halos that are predicted poorly for different parameters (are the same haloes or types of halos predicted poorly across multiple outcomes).
+    \item \texit{Possible missing parameters.} Anything else that might contribute to the predictions that we haven't included. What do the distributions in parameter space tell us about the ML failing to capture information vs the outcomes having some inherent randomness.
+    \item \texit{Robustness of the machine learning results.} Investigation of data size to show that we weren't constrained by amount of data. Cost curves during training? ROC curves? Is it possible the model could have done better given a different tuning/training of the ML algorithms? Discussion of possible underfitting/overfitting of the models. Room for improvement in the ML methodology.
+    \item \textit{Possible uses or implications of the models for simulation.} What does this inherent stochacisity seem to point to? What can we say about the results of simulations or how they do their calculations of these types of merging interactions based on the uncertainty in the outcomes of the objects? How much can we expect this type of uncertainty and is it a cause for concern.
+    \item \textit{Possible use/implications for observation} Is there anything we can say about distributions that we can expect around the MW or other galaxies. Particularly for survival which we obviously predict much better than the other quantities.
+    \item Discussion of future works related to this??
 
 \end{itemize}
 
