@@ -43,6 +43,7 @@
 \usepackage{graphicx}	% Including figure files
 \usepackage{amsmath}	% Advanced maths commands
 \usepackage{amssymb}	% Extra maths symbols
+\usepackage{textgreek}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -115,10 +116,17 @@ me -- genius -- smart
   \item Paragraph that says what all of the sections are. In Section 2, we describe the simulation and data that was used, as well as the methods to properly reduce the data into the desired sample. In section 3, we cover the machine learning methods used and any special techniques applied to each predictor. In Section 4, we share the results of the predictions for each of the measures of fate and a simpler form?? (equation?? if we can) that can be used to predict each of the fates. Finally, in Section 5 we discuss implications of the results for both observation and theory.
 \end{itemize}
 
-This is how you'd have a little code-text thing: \texttt{mnras\_sample.tex}.
-And this is how I'd cite stuff when I finally read some papers: \citet{Others2013}, \citep[e.g.][]{Author2012}.
-
 \section{Simulation/Description Of Data}
+\label{sec:simulation}
+\begin{figure}
+	% To include a figure from a file named example.*
+	% Allowable file formats are eps or ps if compiling using latex
+	% or pdf, png, jpg if compiling using pdflatex
+	\includegraphics[width=\columnwidth]{Figures/explanatory_figures}
+    \caption{An example of a surviving (top) and merging (bottom) interaction between a subhalo and host halo. The orbit of these two subhalos are shown within the virial radius of their respective host halos. Size of points along the orbit correspond to the mass of the subhalo. In order to see the orbits and the size of the points more clearly, we have plotted only every eighth timestep of the subhalo's orbit. Quantities that we try to predict in this work are labeled and numbered in the order they will be presented throughout the paper.}
+    \label{fig:explanatory_figures}
+\end{figure}
+
 	Our analysis makes use of VISHNU, a cosmological N-body simulation with 1000 snapshots. VISHNU contains 1680\textsuperscript{3} particles in a volume of 130h\textsuperscript{-1} cMpc and uses WMAP-1 cosmology (\citet{Springel2013}; $\Omega$\textsubscript{m} = 0.25, $\Omega$\textsubscript{$\Lambda$} = 0.75, $\Omega$\textsubscript{b} = 0.04, $\sigma$\textsubscript{8} = 0.8, \textit{n\textsubscript{s}} = 1.0, \textit{h} = 0.7). Each dark matter particle has mass \textit{m\textsubscript{p}} = 3.215 $\times$ 10\textsuperscript{7}h\textsuperscript{-1} M\textsubscript{\(\odot\)}, and subhalos can contain as few as 2 particles. The ROCKSTAR halo finder was used to identify halos and subhalos, and merger trees were constructed with Consistent-Trees (\citet{Behroozi2013b}).
 \par
     From the merger trees, we select subhalos of the most massive progenitors of host halos at \textit{z}=0. These subhalos are allowed to have further substructure inside of them but cannot, at any point during their infall, become sub-substructure themselves. To help mitigate resolution uncertainties, we select only subhalos which consist of 1000 particles (total mass 3.215 $\times$ 10\textsuperscript{10}h\textsuperscript{-1} M\textsubscript{\(\odot\)}) or more at their time of accretion. We define the accretion point of a subhalo as the last timestep before a subhalo enters its host. As such, at the initial time of accretion, the will-be subhalos are still host halos themselves. Once the subhalo has entered its host, however, it cannot leave again (so, a flyby interaction would not be considered on its first pass but will be considered on a later pass if it falls back into and remains inside the host). Once it has been accreted, the subhalo must have one of two fates: merge with the host, or remain a bound, identified subhalo within that host until today. Following uncertainties in subhalo mass loss shown by \citet{VDB2018}, once a subhalo has lost more than 90\% of its mass, it is considered to be merged.
@@ -129,12 +137,43 @@ And this is how I'd cite stuff when I finally read some papers: \citet{Others201
 \par
     Our resulting sample includes a total of \textbf{INSERT NUMBER} subhalo-halo interactions. Distributions of this sample with respect to host masses, mass ratios, and the scale factor of the time of entry are shown in Fig.~\ref{fig:combined_distributions_logBin}. The most common interactions in our sample are mergers of lower mass ratio that occurred more recently. However, our sample also spans the space of more equal mass and higher redshift mergers, with hundreds of interactions shown in many of the bins in Fig.~\ref{fig:combined_distributions_logBin}. \textit{Some reference to how many of these are expected? Indication that this is a representative sample of what we expect to see slash agreement with other simulations?}
 \par
-    For both the host halo and subhalo at the timestep of infall, and at either the timestep right before merging or at z=0, we take several physically-motivated parameters to describe the interaction between the halos. Table 1 lists these parameters and includes a brief description of each. \textit{Include ALL parameters that we took and then somehow mark the ones that we kept or only mention the ones that we kept. I don't want a table of a billion things but also don't want any question that we didn't cover everything}. From the parameters taken from the merger trees, we calculated some additional parameters. These include the eccentricity, mass ratio (M\textsubscript{ratio}=M\textsubscript{sub}/M\textsubscript{host}), relative distances and relative velocities? \textit{How much to go over these, or do we even need to mention calculating stuff like relative distance because it's so obvious.}
+    For both the host halo and subhalo at the timestep of infall, and at either the timestep right before merging or at z=0, we take several physically-motivated parameters to describe the interaction between the halos. Table 1 lists these parameters and includes a brief description of each. \textit{Include ALL parameters that we took and then somehow mark the ones that we kept or only mention the ones that we kept. I don't want a table of a billion things but also don't want any question that we didn't cover everything}. From the parameters taken from the merger trees, we calculated some additional parameters. These include the eccentricity, mass ratio (M\textsubscript{ratio}=M\textsubscript{sub}/M\textsubscript{host}), relative distances and relative velocities? \textit{How much to go over these, or do we even need to mention calculating stuff like relative distance because it's so obvious.} Initial parameters, which were used as input parameters to the machine learning models to make predictions, include:
+    
+    \begin{itemize}
+        \item \textbf{a}: the scale factor of the universe at the time of the subhalo's entry.
+        \item \textbf{M\textsubscript{sub,i}}: the virial mass of the subhalo at the time of its entry.
+        \item \textbf{M\textsubscript{host,i}}: the virial mass of the host halo at the time of the subhalo's entry.
+        \item \textbf{M\textsubscript{sub,i}/M\textsubscript{host,i}}: the ratio of subhalo to host halo masses at the time of the subhalo's entry.
+        \item \textbf{R\textsubscript{vir,sub,i}}: the virial radius of the subhalo
+        \item \textbf{R\textsubscript{vir,host,i}}: the virial radius of the host halo
+        \item \textbf{c\textsubscript{sub}}: the concentration of the subhalo
+        \item \textbf{c\textsubscript{host}}: the concentration of the host halo
+        \item \textbf{\textlambda\textsubscript{sub}}: Bullock spin parameter of the subhalo
+        \item \textbf{\textlambda\textsubscript{host}}: Bullock spin parameter of the host halo
+        \item \textbf{v\textsubscript{rel}}: relative total velocity between subhalo and host halo, calculated in the reference frame of the sub.
+        \item \textbf{d\textsubscript{rel,i}}: relative absolute total distance between subhalo and host halo centers
+        \item \textbf{\textepsilon}: eccentricity of subhalos initial orbit
+        \item \textbf{max(M\textsubscript{subs,sub})}: the virial mass of the most massive sub-subhalo within the subhalo at the time of the subhalo's entry. 0 if subhalo has no sub-substrucutre.
+        \item \textbf{max(M\textsubscript{subs,host})}: the virial mass of the most massive subhalo already within the host halo at the time of the selected subhalo's entry. Does not include the selected subhalo.
+        \item \textbf{N\textsubscript{subs,sub}}: the total number of sub-subhalos within the subhalo at the time of entry.
+        \item \textbf{N\textsubscript{subs,host}}:  the total number of subhalos within the host halo at the time of entry. Does not include the selected subhalo.
+        \item \textbf{T\textsubscript{sub}}: the triaxiality parameter of the subhalo at the time of entry.
+        \item \textbf{T\textsubscript{host}}:  the triaxiality parameter of the host halo at the time of entry.
+    \end{itemize}
+    
+    Parameters that are taken at the end of the interaction, either at the time of merging or at z=0, are used to define the quantities that the machine learning models will predict. These parameters include:
+    
+\renewcommand{\theenumi}{\arabic{enumi}}
+    \begin{enumerate}
+        \item \textbf{survival}: a 0 or 1, depending on if the subhalo exists above the required mass threshold at z=0 (survives, 1) or if the subhalo has merged with its host at some time before (merges, 0)
+        \item \textbf{a\textsubscript{f}}: the scale factor of the universe at the end of the interaction. Converted to time (t\textsubscript{f}) when predicting merge time.
+        \item \textbf{M\textsubscript{sub,f}}: the virial mass of the subhalo at the end of the interaction.
+        \item \textbf{d\textsubscript{rel,f}}: relative absolute total distance between subhalo and host halo centers at the end of the interaction.
+    \end{enumerate}
 \par
     As preparation for using machine learning, we split the data into train and test sets, with 80\% of the data to be used for training and 20\% to be used for testing. These subsamples are selected randomly from the total sample. \textit{Counts and some simple statistics of these sets are shown in Table 2. Averages and standard deviations of these samples are similar, showing that the test set is representative of the training set.} The data was also scaled and normalized to have a mean of zero and unit variance. For training the machine learning models, the training set was further divided into training and validation sets, also using an 80/20 split. From the original dataset, this means the data was split as 64\% training, 16\% validation, and 20\% testing.
 
-
-\begin{figure*}
+\begin{figure*}[h]
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
@@ -143,48 +182,64 @@ And this is how I'd cite stuff when I finally read some papers: \citet{Others201
     \label{fig:combined_distributions_logBin}
 \end{figure*}
 
+
+
 \section{Machine Learning Methods}
-Discussion and description of the various machine learning models that were used. I have it with subsections here for the different methods although I don't know if that makes complete sense. Discuss each of the two methods (RF for survival and GBR for all the regression problems) in enough detail that 
+The machine learning algorithms used in this work come from the \texttt{scikit-learn} package for python. For the classification problem of subhalo survivial, we use the random forest algorithm. For the regression problems of predicting mass loss, final position, and merging time, we use the gradient boosting regressor algorithm. Although the reader is referred to the \texttt{scikit-learn} documentation for a full description of these algorithms, a brief description of these methods is included in this section.
 
 \subsection{Random Forests}
 \label{sec:rf} % used for referring to this section from elsewhere
-\begin{itemize}
-	\item Basic description of the algorithm and how it works. What parameters are there to play with and what that changes about the way that the model does its thing.
-    \item Advantages and disadvantages. How easy it can be to overfit given the smaller scope of the problem, dangers of underfitting when trying to trim down parameters, how different parameters of the model can constrain the model to only use some features. Advantages over simpler models.
-    \item Applications to this specific problem (binary classification)
-\end{itemize}
+\textit{Basic description of the algorithm and how it works. What parameters are there to play with and what that changes about the way that the model does its thing.} Random forest classifiers use a compilation of decision trees to reach consensus on a prediction. Individual decision trees are trained on random subsets of the dataset, and the majority vote of all decision trees gives the classification. The scikit-learn algorithm uses by default the Gini impurity to measure the goodness of a decision split within each decision tree. There are several hyperparameters of the algorithm that we tune in order to get the best-fitting model. The number of estimators hyperparamter sets the number of decision trees that will be separately trained and used in the final consensus. The depth hyperparameter sets how many decisions can be made going down each tree before reaching a classification decision. The maximum number of nodes hyperparameter sets the maximum number of new nodes an existing node can split into at the next depth level. We keep other parameters of the algorithm set to their default values.
+
+\textit{Advantages and disadvantages.} The advantage of using a random forest over a single decision tree is the reduction of overfitting. Because each decision tree is given some subset of the dataset, and decision splits are made on random subsets of the parameters, individual decision are less overfit and the consensus of the all decision trees is more robust to unseen data. This is important especially in cases like our own where we have a relatively large number of training examples and small number of needed parameters. Unfortunately, the results of a random forest can also be more difficult to interpret than those of more simple classifiers. Because each decision tree only sees some portion of the information, some decision trees may be very poor predictors. The \texttt{scikit-learn} random forest classifier provides a function that ranks the importance of training features given their frequency of selection and proximity to the top of the decision trees. However, strong correlations between features can make this ranking difficult to straightforwardly interpret as well, because features that are important but also strongly correlated with other features may be selected less frequently in lieu of their strongly correlated counterpart.
+
+\textit{Applications to this specific problem.} The subhalo survival classification problem is a binary classification problem, which assigns a subhalo a value of 0 for merging before z=0, and a value of 1 for surviving until z=0. We train the model using all initial features described in \ref{sec:simulation}. Given the strong correlations amongst several of our parameters, we do not use the order of feature importance given by the \texttt{scikit-learn} algorithm to decide which of our features are most prominent, and instead choose our own order, outlined in \ref{sec:feature selection} below. We use this order to train models, using the same hyperparameters, on smaller subsets of the features to confirm the number of features needed to make predictions.
 
 \subsection{Gradient Boosting Regressors}
 \label{sec:gbr} % used for referring to this section from elsewhere
-\begin{itemize}
-	\item Basic description of the algorithm and how it works. What parameters are there to play with and what that changes about the way that the model does its thing.
-    \item Advantages and disadvantages. How easy it can be to overfit given the smaller scope of the problem, dangers of underfitting when trying to trim down parameters, how different parameters of the model can constrain the model to only use some features. Advantages over simpler models.
-    \item Applications and such to this specific problem (regression problems)
-\end{itemize}
+\texit{Basic description of the algorithm and how it works.} Gradient boosting regressors use a number of weak learners, like decision trees, along with some measure of how well each tree does to train additional trees. Like random forests, the consensus of many decision trees is the prediction. However, unlike random forests, the results of the trees are additive, rather than majority vote. Thus, gradient descent is performed with the addition of each tree and the loss is minimized. We use a huber loss function as it is shown to be robust.... As with the random forest classifier, several hyperparameters can be tuned to create the best model. The learning rate hyperparameter shrinks the contribution of each additionally added tree to the ensemble, decreasing the contribution of each tree but allowing more improvement to the model. As with the random forest classifier algorithm described above, we also tune the number of estimators, depth, and maximum number of nodes hyperparamters for individual trees in the gradient boosting algorithm. Other parameters of the algorithm are kept as their default values.
+
+\textit{Advantages and disadvantages.} The advantage of using a gradient boosting regressor is that... How easy it can be to overfit given the smaller scope of the problem, dangers of underfitting when trying to trim down parameters. As with the random forest classifier, this gradient boosting regressor class in python also contains a function to report relative feature importances. However, interpreting these results again presents difficulties. How different parameters of the model can constrain the model to only use some features. Advantages over simpler models.
+
+\texit{Applications and such to this specific problem.} For each of our regression problems, we use a gradient boosting regressor to predict the final quantity. A different gradient boosting regression model is created and separately tuned for each of our outcomes we predict. Each model is is given all initial features to train on. As with the survival classification problem, due to the difficulty of interpreting the reported feature importances of the algorithm, we use our custom algorithm to determine the order and relative importance of features for predicting each of our desired quanitites.
 
 \subsection{Other Models}
 \label{sec:other models} % used for referring to this section from elsewhere
+\textit{Not sure if this really needs to be its own subsection at all, or if casually mentioning this type of stuff in the previous sections is sufficient. I don't have too much to say in this section as of now but I guess it can just be a small section?}
+Although we have chosen to use a random forest classifier and gradient boosting regression for our analysis, several other popular machine learning models could be chosen. In particular, neural networks have become increasingly popular for a wide variety of applications, to both classification and regression problems due to their ability to fit to data incredibly well. Several other, arguably more intuitive machine learning algorithms could also be used. The K-nearest-neighbors algorithm, for example, assigns predictions based on the properties of objects that are similar to the object trying to be predicted. To ensure that our model was as well fit and possible without being too overfit, we tried several of such machine learning algorithms before settling on our choices.
 
-\textit{Not sure if this really needs to be its own subsection at all, or if casually mentioning this type of stuff in the previous sections is sufficient.}
-\begin{itemize}
-	\item Description/mention of some other popular/common models. Both more complicated (like neural nets) and less complicated (like KNN)
-    \item What we tried and how much it improved/didn't improve? Reason we went with GBR's for all regressors and an RF for the survival problem?
+In particular, neural networks, random forests, and gradient boosting regressors seem to perform quite similarly. \textit{How much it improved/didn't improve? Specific cases? How much to say here? Reason we went with GBR's for all regressors and an RF for the survival problem?}
 
-\end{itemize}
 
-\subsection{Feature Selection}
+\section{Feature Selection}
 \label{sec:feature selection} % used for referring to this section from elsewhere
-
 \textit{Description of how we reduced/ordered the features. The variation tree procedure for selecting the features and ordering the first few most important ones. How we decided that of all of the parameters we did and could take, no need for more than a few to make good predictions.}
-
 \begin{itemize}
     \item \textit{How we reduced from like 50 parameters to 20? Or should i not go into detail about that.} Initially, our sample contained \textbf{INSERT NUMBER} parameters (or features) to describe each interaction. Reducing the dimensionality of the data? Checks for important and unimportant parameters. How we are sure that the number of features we gave the model is correct and optimal, how were we able to get rid of some of the unimportant parameters?
     \item \textit{Description of the variation tree method of selecting the most important parameters.} The basic idea. How it fits with doing machine learning methods that rely on decision trees because the underlying assumptions are similar. Problems with getting too much noise when trying to order beyond 4 parameters. What the metric for amount of variation means and what it tells us.
     \item \textit{A Table that shows, for the 4 parameters that are selected to be the most important, how much variation is within that parameter and the order of the 4.} Can note already that some of the features show up amongst all things being predicted. Some discussion of whether or not you can tell at this point that some thing being predicted might need an additional parameter (a fifth) or might do well with only 3 (still high variation compared to noise in the last parameter or last chosen parameter close to noise).
-    \item \texit{According to selected features, what do the best 2D spaces look like for the things we want to predict?} Shown for each of the things we're predicting in \ref{fig:bestSpaces}. Discussion of how, for something like survival, it's clear that the prediction will be more straightforward and do well even for one or two features. Discussion for the other things that we're predicting about how it can be harder to see by eye that the feature will be so important, especially in a 2D space.
+    \item \texit{According to selected features, what do the best 2D spaces look like for the things we want to predict?} Shown for each of the things we're predicting in \ref{fig:bestSpaces}. Discussion of how, for something like survival, its clear that the prediction will be more straightforward and do well even for one or two features. Discussion for the other things that we're predicting about how it can be harder to see by eye that the feature will be so important, especially in a 2D space.
 \end{itemize}
+
+% Example table
+\begin{table}
+	\centering
+	\caption{Caption for the table.}
+	\label{tab:FS_table}
+	\begin{tabular}{c|cccc} % four columns, alignment for each
+		\hline
+		rank & Survival & Mass Loss & Final Position & Merge Time\\
+		\hline
+		1 & a () & R\textsubscript{vir,sub} () & R\textsubscript{vir,host} () & a ()\\
+		2 & M\textsubscript{sub}/M\textsubscript{host} () & a () & a () & \textepsilon ()\\
+		3 & \textepsilon () & \textepsilon () & M\textsubscript{sub}/M\textsubscript{host} () & M\textsubscript{sub}/M\textsubscript{host} ()\\
+		4 & v\textsubscript{rel} () & d\textsubscript{rel} & \textepsilon () & c\textsubscript{sub}\\
+		\hline
+	\end{tabular}
+\end{table}
+
 % Best-spaces figure
-\begin{figure*}
+\begin{figure*}[h]
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
@@ -193,31 +248,32 @@ Discussion and description of the various machine learning models that were used
     \label{fig:bestSpaces}
 \end{figure*}
 
+
+
 \section{Results}
 I was planning on splitting this section into subsections, such as Section~\ref{sec:survival} below. One for each of the quanities we're trying to predict.
 
 \subsection{Survival}
 \label{sec:survival} % used for referring to this section from elsewhere
-
 For the entire sample of subhaloes, we first try to predict whether or not a halo will survive until today (1) or merge particles with the host (0) during its infall.
 \begin{itemize}
 	\item From the variation tree method, what are the 4 most important parameters. What parameters do we add after that and in what order.
 	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:survival_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
-	\begin{figure*}
+\begin{figure}[h]
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/survival_predictions}
     \caption{Survival.}
     \label{fig:survival_predictions}
-\end{figure*}
+\end{figure}[h]
     \item The parameters: the best combination of parameters and the fiducial set that you need in order to get the best accuracy you can. Do the feature selection methods that we used seem to show an accurate picture of what features were going to be important. Present the best order of the parameters, and state how much information is gained by adding each parameter and how it levels off. 
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\textwidth]{Figures/survival_contours}
-    \caption{Mass loss contours.}
+    \caption{Survival contours.}
     \label{fig:survival_contours}
 \end{figure*}
 \end{itemize}
@@ -228,14 +284,14 @@ For only subhalos that survive until redshift zero without being disrupted, we t
 \begin{itemize}
 	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor due to poisson noise of the particles. What accuracy we are trying to get.
 	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
-\begin{figure*}
+\begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/massloss_predictions}
     \caption{Mass loss.}
     \label{fig:massloss_predictions}
-\end{figure*}
+\end{figure}
     \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
 	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
 \begin{figure*}
@@ -248,21 +304,20 @@ For only subhalos that survive until redshift zero without being disrupted, we t
 \end{figure*}
 \end{itemize}
 
-
 \subsection{Final Position}
 \label{sec:position}
 For only subhalos that survive until redshift zero without being disrupted, we try to predict where in their host halo they end up at redshift zero.
 \begin{itemize}
 	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor. What accuracy we are trying to get.
 	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
-\begin{figure*}
+\begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/position_predictions}
     \caption{Position.}
     \label{fig:position_predictions}
-\end{figure*}
+\end{figure}
     \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
 	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
 \begin{figure*}
@@ -281,14 +336,14 @@ For only subhalos that have merged before redshift zero, we try to predict how l
 \begin{itemize}
 	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor. What accuracy we are trying to get.
 	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
-\begin{figure*}
+\begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/time_predictions}
     \caption{Merge time.}
     \label{fig:time_predictions}
-\end{figure*}
+\end{figure}
     \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
 	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
 \begin{figure*}
@@ -316,40 +371,21 @@ Refer to as equation~(\ref{eq:quadratic}).
 Refer to figures as e.g. Fig.~\ref{fig:example_figure}, and tables as
 e.g. Table~\ref{tab:example_table}.
 
-% Example table
-\begin{table}
-	\centering
-	\caption{Caption for the table.}
-	\label{tab:example_table}
-	\begin{tabular}{lccr} % four columns, alignment for each
-		\hline
-		A & B & C & D\\
-		\hline
-		1 & 2 & 3 & 4\\
-		2 & 4 & 6 & 8\\
-		3 & 5 & 7 & 9\\
-		\hline
-	\end{tabular}
-\end{table}
+This is how you'd have a little code-text thing: \texttt{mnras\_sample.tex}.
+And this is how I'd cite stuff when I finally read some papers: \citet{Others2013}, \citep[e.g.][]{Author2012}.
 
-\section{Discussion}
+
+
+\section{Discussion and Conclusions}
 \begin{itemize}
 	\item \texit{Discuss the parameters that were chosen to be important.} Which seem to be important across all of the predicted quantities and which might be more surprising or less intuitive. Some physically motivated speculation as to why those chosen make or don't make sense?
     \item What went wrong for the outcomes that can't be predicted very well. Show/Discuss specific cases where outcomes are predicted well/not well? Show the contour plots here? Talk about if there are any common spaces within those contours that are consistently not predicted well. Like things in a mid-scale range (.6) being predicted poorly for pretty much anything you want to know. Is there anything common amongst the halos that are predicted poorly for different parameters (are the same haloes or types of halos predicted poorly across multiple outcomes).
     \item \texit{Possible missing parameters.} Anything else that might contribute to the predictions that we haven't included. What do the distributions in parameter space tell us about the ML failing to capture information vs the outcomes having some inherent randomness.
     \item \texit{Robustness of the machine learning results.} Investigation of data size to show that we weren't constrained by amount of data. Cost curves during training? ROC curves? Is it possible the model could have done better given a different tuning/training of the ML algorithms? Discussion of possible underfitting/overfitting of the models. Room for improvement in the ML methodology.
-    \item \textit{Possible uses or implications of the models for simulation.} What does this inherent stochacisity seem to point to? What can we say about the results of simulations or how they do their calculations of these types of merging interactions based on the uncertainty in the outcomes of the objects? How much can we expect this type of uncertainty and is it a cause for concern.
+    \item \textit{Possible uses or implications of the models for simulation.} What does this inherent stochasticity seem to point to? What can we say about the results of simulations or how they do their calculations of these types of merging interactions based on the uncertainty in the outcomes of the objects? How much can we expect this type of uncertainty and is it a cause for concern.
     \item \textit{Possible use/implications for observation} Is there anything we can say about distributions that we can expect around the MW or other galaxies. Particularly for survival which we obviously predict much better than the other quantities.
     \item Discussion of future works related to this??
 
-\end{itemize}
-
-
-\section{Conclusions}
-
-\begin{itemize}
-	\item Restate the predictions, how well to the fiducial confidence can do for each of the outcomes. Restate what the most important features are and the smallest subset of features for each outcome needed to do a good job.
-	\item Implications for theory. Usability of an equation (if one is able to be made). Looking further/future work into looking at the actual orbits or figuring out what's up with the failed cases.
 \end{itemize}
 
 \section*{Acknowledgements}
