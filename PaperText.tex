@@ -78,7 +78,7 @@ $^{3}$Another Department, Different Institution, Street Address, City Postal Cod
 \date{Accepted XXX. Received YYY; in original form ZZZ}
 
 % Enter the current year, for the copyright statements etc.
-\pubyear{2015}
+\pubyear{2018}
 
 % Don't change these lines
 \begin{document}
@@ -88,7 +88,7 @@ $^{3}$Another Department, Different Institution, Street Address, City Postal Cod
 
 % Abstract of the paper
 \begin{abstract}
-I used machine learning to solve the whole universe I'm so smart.
+Using machine learning, we predict the survival, mass loss, final position, and merging time of subhalos within a dark matter only simulation. Given many recent works questioning the accuracy of individual subhalo fates due to numerical disruption in simulations and differences in halo finder or merger tree code, we use the ability of these models to accurately make predictions as a proxy for the stochasticity of the underlying evolution within N-body simulations. Survival is well predicted, with 96.5\% accuracy given only 3 parameters from the initial interaction. Mass loss is more stochastic, with 90\% of subhalos being predicted accurately, given the definition of accuracy allows a \textpm 20\% error in mass. For final position, 90\% of subhalos can be predicted accurately given the definition of accuracy allows a \textpm 20\% error in final location. For merge time, 90\% of subhalos can be predicted accurately given an error of \textpm 1.5 dynamical times. We conclude that the evolution of individual subhalos within N-body simulations is quite stochastic. \textit{Probably should have more than just that one conclusion. Something like "But, it's encouraging that...."}
 \end{abstract}
 
 % Select between one and six entries from the list of approved keywords.
@@ -103,18 +103,21 @@ me -- genius -- smart
 
 \section{Introduction}
 
-\begin{itemize}
-  \item \textit{Broad context: hierarchical merging in LCDM as the primary method of structure formation. We have satellites.}
-  According to the standard LCDM model of cosmology, dark matter structures in the universe form hierarchically through series of mergers, eventually growing large enough to host the galaxies and clusters we see today. These larger haloes are thought to form primarily through the accretion of smaller subhaloes. As these subhaloes sink to the center of their host haloes, tidal stripping and dynamical friction cause them to lose mass to their hosts. However, remnants of these subhaloes may survive, and today can be observed by the satellite galaxies that they may come to host.
-  \item \textit{Narrower context? The use of N-body simulations as the primary way of studying this, how deterministic interactions are, reliability of cosmological simulations, as discussed in other works?}
-  The evolution of dark matter structures is most often studied by running cosmological N-body simulations, where the grouping and merging of haloes can be explicitly tracked. In such simulations, dark matter subhaloes are considered separate objects from their hosts as long as ..... Although these simulations are an excellent tool for studying structure formation in detail, Several models have been created to model how this merging happens. However, many other studies have shown that the fate of a subhalo can be quite stochastic.
-  \item \textit{Narrower context: Importance of trying to understand DM populations and what properties of a DM halo drive its evolution. Advantages that could come from having an ML algorithm because it tells us what information is important and if we are/aren't able to predict these sorts of interactions, what that could imply.}
-  \item Other works. What do we already know about how these interactions happen? What do we think are the most important properties for determining the outcomes?
-  \item In this work: We use a dark matter only simulation and the subhaloes within it, in order to determine the fate (i.e Survival, Mass Loss, Merging Time, Final Position) from its initial conditions at the time of entry.
-  \item Motivation for using machine learning. The ability of an ML algorithm to consider all features in an unbiased way. The importance of testing models with a lot of features so that we can say whether the information is really there or not.
-    \item The Nadler et al paper. Machine learning as shown to be a promising tool for astronomy and these types of interactions in particular.
-  \item Paragraph that says what all of the sections are. In Section 2, we describe the simulation and data that was used, as well as the methods to properly reduce the data into the desired sample. In section 3, we cover the machine learning methods used and any special techniques applied to each predictor. In Section 4, we share the results of the predictions for each of the measures of fate and a simpler form?? (equation?? if we can) that can be used to predict each of the fates. Finally, in Section 5 we discuss implications of the results for both observation and theory.
-\end{itemize}
+According to the standard \LambdaCDM model of cosmology, dark matter structures in the universe form hierarchically through series of mergers, with larger halos continuously growing through the accretion of smaller subhalos. Once independent halos themselves, these subhalos sink to the center of their "host" halos, losing mass along their orbits due to tidal effects and dynamical friction. However, as has been shown by modern cosmological N-body simulations (CITE, CITE, CITE), a significant number of such subhalos retain some of their mass, remaining as substructures within their hosts today. The study of these substructures has been fundamental to our understanding of many areas of astrophysics, including the formation and evolution of galaxies (CITE, CITE), which relies on both accurate populations of subhalos for applications such as abundance matching (CITE, CITE), and accurate subhalo evolution for applications such as semi-analytic modeling (CITE, CITE).
+
+Although the evolution and statistics of dark matter structures is most often studied from high-resolution cosmological N-body simulations, much speculation remains as to the accuracy of these simulations, particularly on these small scales (Van den Bosch 2018, VDB 2016, everything VDB's done pretty much). Although several studies have suggested that simulation resolution only effects subhalos with fewer than 50-100 particles (CITE, CITE, CITE), \citet{VDB2018} found that typical state-of-the-art cosmological simulations cannot resolve subhalos well enough to follow their mass loss until complete disruption. In the Bolshoi simulation, \citet{VDB2016} found that only around 20\% of subhalo disruption was truly physical, with instantaneous masses of the subhalos along their orbits being highly erratic. Similarly, \citet{VDB2017} found that most subhalo disruption in modern simulations is artificial or numerical in nature.
+
+A number of other works have also called into question the reliability of the halo catalogs and merger trees that are generated from these simulations. Comparison projects have found differing results for the fates of subhalos using different halo finders (\citet{Knebe2011}, \citet{Avila2013}) and merger tree codes (\citet{Srisawat2013}, CITE). Because these codes fundamentally define subhalos in different ways and trace their properties between snapshots using different methods, these comparison projects found that, when applied to the same simulation, resulting halo catalogs and merger trees could differ quite significantly. \textit{A few more specific examples, in each case. Need more citations/projects.}
+
+Although subhalo mass functions seem to be consistent amongst different simulations and with the use of these different codes, down to small subhalo masses (CITE, CITE), the evolution and fate of an individual subhalo remains much harder to predict. Nonetheless, semi-analytic models, attempt to describe the evolution of subhalos, tuning their analytic equations to the results of N-body simulations (CITE, CITE, CITE). These semi-analytic models often perform quite well, reproducing the ... \textit{Also need to look up more SAM citations for this section. Talk about producing populations vs individual subs. Challenges of getting a specific subs evolution correct.}
+
+Although semi-analytic models face challenges in predicting the individual fates of subhalos, much work has been done to pinpoint the parameters necessary to model subhalo evolution and the physical processes that cause such evolution. \textit{Cover each topic? Works on merge time. Works on survival. Works on mass loss. Works on final position. As inidivudal paragraphs? A sentence?}
+
+In this work, we use a merger tree generated from the dark matter only simulation VISHNU (CITE?), and the subhaloes within it, in order to determine the fate (i.e Survival, Mass Loss, Merging Time, Final Position) of a subhalo from its initial conditions at the time of entering its host. Using physically-motivated parameters from the time of the subhalos entry, we use machine learning to predict these final quantities of the subhalo, in the hopes of investigating to what degree subhalo fate is motivated by these parameters and to what degree the interaction is stochastic and cannot be predicted. Assuming a generalized analytic model to predict the fate of a subhalo exists, a machine learning algorithm should be able to approximate this functional form and map the subhalo fate to its initial conditions. Otherwise, given stochasticity in individual subhalo fate resulting from numerical disruption and halo identification problems, many of the subhalos will not be able to be predicted accurately. \textit{This feels very weirdly worded and/or not really concise. Need to revisit.}
+
+\textit{I don't know if parts of this paragraph really needs to be here or if it just goes without saying that machine learning is a cool tool.} Recently in astrophysics, the use of machine learning has become increasingly popular for such applications (CITE, CITE, CITE). The ability of machine learning models to approximate any function, given a complete set of parameters, means it is an incredibly useful tool when a direct analytic function cannot be found. Notably, \citet{Nadler2017} recently used machine learning to predict the survival or disruption of subhalos in a hydrodynamic simulation, using the initial conditions of their counterparts in a dark matter only simulation. They were quite successful, accurately predicting the results of 85\% of their subhalo population. Works like this are encouraging that machine learning can be used to fit these complicated interactions. However, in this work, although we only use a dark matter only simulation, we also hope to take our predictions a step further by also predicting the mass loss, final spatial position, and merging time of these subhalos.
+
+In Section \ref{sec:simulation}, we describe the simulation and data that was used, as well as the methods to properly reduce the data into the desired sample. In Section \ref{sec:ML Methods}, we cover the machine learning methods used to create our predictive models. In Section \ref{sec:feature selection}, we discuss the feature selection methods used to reduce the number of parameters needed to make predictions. In Section \ref{sec:Results}, we share the results of our models for predicting each of our outcomes, including their performance and which parameters were needed as inputs to the model. Finally, in Section \ref{sec:Conclusion} we discuss implications of the results for both observation and theory.
 
 \section{Simulation/Description Of Data}
 \label{sec:simulation}
@@ -127,7 +130,7 @@ me -- genius -- smart
     \label{fig:explanatory_figures}
 \end{figure}
 
-	Our analysis makes use of VISHNU, a cosmological N-body simulation with 1000 snapshots. VISHNU contains 1680\textsuperscript{3} particles in a volume of 130h\textsuperscript{-1} cMpc and uses WMAP-1 cosmology (\citet{Springel2013}; $\Omega$\textsubscript{m} = 0.25, $\Omega$\textsubscript{$\Lambda$} = 0.75, $\Omega$\textsubscript{b} = 0.04, $\sigma$\textsubscript{8} = 0.8, \textit{n\textsubscript{s}} = 1.0, \textit{h} = 0.7). Each dark matter particle has mass \textit{m\textsubscript{p}} = 3.215 $\times$ 10\textsuperscript{7}h\textsuperscript{-1} M\textsubscript{\(\odot\)}, and subhalos can contain as few as 2 particles. The ROCKSTAR halo finder was used to identify halos and subhalos, and merger trees were constructed with Consistent-Trees (\citet{Behroozi2013b}).
+	Our analysis makes use of VISHNU, a cosmological N-body simulation with 1000 snapshots. VISHNU contains 1680\textsuperscript{3} particles in a volume of 130h\textsuperscript{-1} cMpc and uses WMAP-1 cosmology (\citet{Spergel2013}; $\Omega$\textsubscript{m} = 0.25, $\Omega$\textsubscript{$\Lambda$} = 0.75, $\Omega$\textsubscript{b} = 0.04, $\sigma$\textsubscript{8} = 0.8, \textit{n\textsubscript{s}} = 1.0, \textit{h} = 0.7). Each dark matter particle has mass \textit{m\textsubscript{p}} = 3.215 $\times$ 10\textsuperscript{7}h\textsuperscript{-1} M\textsubscript{\(\odot\)}, and subhalos can contain as few as 2 particles. The ROCKSTAR halo finder was used to identify halos and subhalos, and merger trees were constructed with Consistent-Trees (\citet{Behroozi2013b}).
 \par
     From the merger trees, we select subhalos of the most massive progenitors of host halos at \textit{z}=0. These subhalos are allowed to have further substructure inside of them but cannot, at any point during their infall, become sub-substructure themselves. To help mitigate resolution uncertainties, we select only subhalos which consist of 1000 particles (total mass 3.215 $\times$ 10\textsuperscript{10}h\textsuperscript{-1} M\textsubscript{\(\odot\)}) or more at their time of accretion. We define the accretion point of a subhalo as the last timestep before a subhalo enters its host. As such, at the initial time of accretion, the will-be subhalos are still host halos themselves. Once the subhalo has entered its host, however, it cannot leave again (so, a flyby interaction would not be considered on its first pass but will be considered on a later pass if it falls back into and remains inside the host). Once it has been accreted, the subhalo must have one of two fates: merge with the host, or remain a bound, identified subhalo within that host until today. Following uncertainties in subhalo mass loss shown by \citet{VDB2018}, once a subhalo has lost more than 90\% of its mass, it is considered to be merged.
 \par
@@ -166,9 +169,9 @@ me -- genius -- smart
 \renewcommand{\theenumi}{\arabic{enumi}}
     \begin{enumerate}
         \item \textbf{survival}: a 0 or 1, depending on if the subhalo exists above the required mass threshold at z=0 (survives, 1) or if the subhalo has merged with its host at some time before (merges, 0)
-        \item \textbf{a\textsubscript{f}}: the scale factor of the universe at the end of the interaction. Converted to time (t\textsubscript{f}) when predicting merge time.
         \item \textbf{M\textsubscript{sub,f}}: the virial mass of the subhalo at the end of the interaction.
-        \item \textbf{d\textsubscript{rel,f}}: relative absolute total distance between subhalo and host halo centers at the end of the interaction.
+        \item \textbf{d\textsubscript{rel,f}}: relative absolute total distance between subhalo and host halo centers at the end of the interaction, normalized by the virial radius of the host halo.
+        \item \textbf{t\textsubscript{merge}}: the elapsed time between entry of a subhalo into the host virial radius and the time of merging with the host.
     \end{enumerate}
 \par
     As preparation for using machine learning, we split the data into train and test sets, with 80\% of the data to be used for training and 20\% to be used for testing. These subsamples are selected randomly from the total sample. \textit{Counts and some simple statistics of these sets are shown in Table 2. Averages and standard deviations of these samples are similar, showing that the test set is representative of the training set.} The data was also scaled and normalized to have a mean of zero and unit variance. For training the machine learning models, the training set was further divided into training and validation sets, also using an 80/20 split. From the original dataset, this means the data was split as 64\% training, 16\% validation, and 20\% testing.
@@ -185,6 +188,7 @@ me -- genius -- smart
 
 
 \section{Machine Learning Methods}
+\label{sec:ML Methods}
 The machine learning algorithms used in this work come from the \texttt{scikit-learn} package for python. For the classification problem of subhalo survivial, we use the random forest algorithm. For the regression problems of predicting mass loss, final position, and merging time, we use the gradient boosting regressor algorithm. Although the reader is referred to the \texttt{scikit-learn} documentation for a full description of these algorithms, a brief description of these methods is included in this section.
 
 \subsection{Random Forests}
@@ -214,17 +218,22 @@ In particular, neural networks, random forests, and gradient boosting regressors
 \section{Feature Selection}
 \label{sec:feature selection} % used for referring to this section from elsewhere
 \textit{Description of how we reduced/ordered the features. The variation tree procedure for selecting the features and ordering the first few most important ones. How we decided that of all of the parameters we did and could take, no need for more than a few to make good predictions.}
-\begin{itemize}
-    \item \textit{How we reduced from like 50 parameters to 20? Or should i not go into detail about that.} Initially, our sample contained \textbf{INSERT NUMBER} parameters (or features) to describe each interaction. Reducing the dimensionality of the data? Checks for important and unimportant parameters. How we are sure that the number of features we gave the model is correct and optimal, how were we able to get rid of some of the unimportant parameters?
-    \item \textit{Description of the variation tree method of selecting the most important parameters.} The basic idea. How it fits with doing machine learning methods that rely on decision trees because the underlying assumptions are similar. Problems with getting too much noise when trying to order beyond 4 parameters. What the metric for amount of variation means and what it tells us.
-    \item \textit{A Table that shows, for the 4 parameters that are selected to be the most important, how much variation is within that parameter and the order of the 4.} Can note already that some of the features show up amongst all things being predicted. Some discussion of whether or not you can tell at this point that some thing being predicted might need an additional parameter (a fifth) or might do well with only 3 (still high variation compared to noise in the last parameter or last chosen parameter close to noise).
-    \item \texit{According to selected features, what do the best 2D spaces look like for the things we want to predict?} Shown for each of the things we're predicting in \ref{fig:bestSpaces}. Discussion of how, for something like survival, its clear that the prediction will be more straightforward and do well even for one or two features. Discussion for the other things that we're predicting about how it can be harder to see by eye that the feature will be so important, especially in a 2D space.
-\end{itemize}
 
-% Example table
+\textit{How we reduced from like 50 parameters to 20? Or should I not go into detail about that.} Initially, our sample contained \textbf{INSERT NUMBER} parameters (or features) to describe each interaction. These parameters are selected to encompass information about the orbit, environment, and individual properties of both the host and subhalo. Although we begin with a large set of parameters for thoroughness, we expect that not all parameters will be important for predicting our desired quantities. In order to determine which parameters most strongly affect the predicted quantities, we use a feature selection method on all of the parameters that selects four parameters for each predicted quantity that are responsible for the most variation in that quantity. Because our set of parameters has strong correlations between several values, we also aim to use a feature selection method that will minimize correlations in the selected subset of features.
+
+\textit{Description of the variation tree method of selecting the most important parameters.}
+To select the subset of features, we begin by binning a predicted quantity by each of the feature parameters. Then, the most important feature parameter is the one with the most variation in average value of the predicted quantity within those bins. The next important parameter is selected by again binning within each parameter, within the existing bins of the firstly selected parameter. We repeat this process until four feature parameters have been selected, at which point bins become to small and noisy to continue binning the data any further. The order of feature importance is the order in which the parameters were selected using this method.
+ 
+ {How it fits with doing machine learning methods that rely on decision trees because the underlying assumptions are similar? Problems with getting too much noise when trying to order beyond 4 parameters. What the metric for amount of variation means and what it tells us.}
+
+The results of the four most important features for each of the predicted quantities are shown in Table \ref{tab:FS_table}. The number next to each parameter represents the strength of variance due to that feature. This number is \textbf{IS...} the normalized maximum variance within bins of that parameter. Some parameters, such as the initial scale factor of entry and the eccentricity of the subhalos orbit, appear as important for all of the predicted quantities. In particular, the initial scale is either the first or second most important parameter for all quantities. \texit{Some discussion of whether or not you can tell at this point that some thing being predicted might need an additional parameter (a fifth) or might do well with only 3 (still high variation compared to noise in the last parameter or last chosen parameter close to noise)?}.
+
+\texit{According to selected features, what do the best 2D spaces look like for the things we want to predict?} Using this ranking of most important features, we look at the values of our predicted quantities within the two-dimensional space of the two parameters most responsible for variations in the outcome. This is shown in Figure \ref{fig:bestSpaces}. From this figure, we can see how strongly the predicted quantities rely on their chosen features. For survival, the two-dimensional space is clearly divided, suggesting that the survival of a subhalo is already well-determined by only two parameters. For the other quantities, this gradient is less defined, suggesting more parameters are needed to make good predictions. In particular, merge time seems to not have much variation, even amongst the two parameters that cause the most variation in its outcome. \texit{Something about how that means we can already tell it might be harder to predict?}
+
+% Feature Selection Table
 \begin{table}
 	\centering
-	\caption{Caption for the table.}
+	\caption{The ranking order of most important features for predicting each of the desired quantities. Values next to the chosen feature represent the normalized maximum variation from binning within that parameter, where higher values indicate the parameter is more strongly responsible for changes in the prediction outcome.}
 	\label{tab:FS_table}
 	\begin{tabular}{c|cccc} % four columns, alignment for each
 		\hline
@@ -251,142 +260,161 @@ In particular, neural networks, random forests, and gradient boosting regressors
 
 
 \section{Results}
-I was planning on splitting this section into subsections, such as Section~\ref{sec:survival} below. One for each of the quanities we're trying to predict.
+\label{sec:Results}
+For each of the final quantities, we train a machine learning algorithm, using all available parameters, to predict the outcome value. For each of quantity, we select hyperparameters of the model by repeatedly training iterations of the model using the training set, and checking its accuracy on the testing set, until the best fit with lowest overfitting is achieved. We also train the same model with the same hyperparameters on smaller subsets of the feature parameters, removing less important parameters, until the model is trained with only the most important parameter from our feature selection methods. In this way, we can determine the minimum subset of parameters needed to achieve maximum accuracy. Section~\ref{sec:survival} discusses this process for predicting the survival quantity. Section~\ref{sec:mass loss} discusses this process for predicting the mass loss quantity, Section~\ref{sec:position} for the final position quantity, and Section~\ref{sec:merge time} does so for the merging time quantity.
 
 \subsection{Survival}
 \label{sec:survival} % used for referring to this section from elsewhere
-For the entire sample of subhaloes, we first try to predict whether or not a halo will survive until today (1) or merge particles with the host (0) during its infall.
-\begin{itemize}
-	\item From the variation tree method, what are the 4 most important parameters. What parameters do we add after that and in what order.
-	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:survival_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
-\begin{figure}[h]
+For the entire sample of subhaloes, we first try to predict whether or not a halo will survive until z=0 (1) or merge with the host (0) sometime before z=0 using a random forest classifier. The accuracy metric we use is a straightforward categorical accuracy, which is given as the percentage of halos correctly classified as either 0 or 1.
+
+Figure \ref{fig:survival_predictions} shows the accuracy of best-fit model, when trained using all and increasingly small subsets of the feature parameters. The maximum accuracy reached by this model is 96.5\percent for both the training and testing sets. Although the training set generally does better than the test set, the accuracy difference is small and likely caused by a natural amount of overfitting. This maximum accuracy is achieved using only the three top-ranking parameters, after which the addition of more parameters causes increases or decreases in the accuracy that are within noise. Because the model is free at any iteration to use as many of the provided parameters as needed, this suggests that only these three parameters are necessary to predict the survival of a subhalo.
+
+The three parameters that are needed to achieve this maximum accuracy are: the initial scale of subhalo entry, the mass ratio of subhalo to host halo virial mass, and the eccentricity of the subhalo orbit. With the addition of each of these parameters, a \textbf{INSERT NUMBER}, \textbf{INSERT NUMBER}, and  \textbf{INSERT NUMBER} accuracy percentage is gained for each parameter added, respectively. Within the parameter spaces of the four top parameters, we show in Figure \ref{fig:survival_contours} where the accurately and inaccurately predicted subhalos lie. There is a clear tendency for subhalos with a\textsubscript{i} =  .6 - .7 to be the most difficult to predict. This agrees with the upper left plot of Figure \ref{fig:bestSpaces}, where a clear division between always surviving and always merging occurs at this value. We note that, although most of the poorly predicted halos exist in this small section of parameter space, \textbf{INSERT NUMBER} percent of halos with a\textsubscript{i} =  .6 - .7 are still accurately predicted.
+
+\begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/survival_predictions}
-    \caption{Survival.}
+    \caption{Accuracy of model's predictions, for both the training and testing sets, when predicting survival. Percentage of the subhalo sample that is predicted accurately is shown on the y-axis. On the x-axis, the parameters used to train the model are shown. For each point, the model was trained using all parameters to the left of that point on the y-axis. The solid line shows the accuracy on the test set, while the dashed line shows the accuracy on the set the model was trained on.}
     \label{fig:survival_predictions}
-\end{figure}[h]
-    \item The parameters: the best combination of parameters and the fiducial set that you need in order to get the best accuracy you can. Do the feature selection methods that we used seem to show an accurate picture of what features were going to be important. Present the best order of the parameters, and state how much information is gained by adding each parameter and how it levels off. 
+\end{figure}
+
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\textwidth]{Figures/survival_contours}
-    \caption{Survival contours.}
+    \caption{Contours of the accurately and inaccurately predicted subhalos, in the two-dimensional spaces of the four most important features. Blue contours show the correctly predicted subhalos, and red contours show the incorrectly predicted subhalos. Contours are divided into 5 sections, with 20\% of subhalos lying within the inner most contour, 40\% lying within the second innermost contour, and so on. The outermost contour is not shaded as to more clearly show the contour regions.}
     \label{fig:survival_contours}
 \end{figure*}
-\end{itemize}
 
 \subsection{Mass Loss}
 \label{sec:mass loss}
-For only subhalos that survive until redshift zero without being disrupted, we try to predict the mass of the subhalo at redshift zero.
-\begin{itemize}
-	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor due to poisson noise of the particles. What accuracy we are trying to get.
-	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
+For only subhalos that survive until z=0 without being disrupted, we then predict the mass of the subhalo at z=0 using a gradient boosting regressor. To determine the accuracy of the model, we define an accuracy metric, using the the difference between true and predicted mass fraction. A subhalo is considered to be accurately predicted given:
+\begin{equation}
+    \label{eq:mass loss}
+    \frac{|M_\textsubscript{pred,f} - M_\textsubscript{true,f}|}{M_\textsubscript{true,i}} - \frac{2m\textsubscript{p}\sqrt{N\textsubscript{p,true,i}}}{M_\textsubscript{true,i}} \leq tol
+\end{equation}
+Where \texit{tol} is some tolerance value which determines what difference in fractional mass loss is acceptable as accurate. The second term in the equation is an additional tolerance, to account for poisson noise in the number of particles assigned to the subhalo.
+
+Figure \ref{fig:massloss_predictions} shows the accuracy of best-fit model, when trained using all and increasingly small subsets of the feature parameters. Because accuracy of this model depends on the selected tolerance value, we show the accuracy given several different choices of tolerance. Again, the training set generally does better than the test set, for all tolerances, due to slight  overfitting. It can be seen that, again using only the three top-ranking parameters, 60\% of subhalos can be predicted to \textpm 5\% of their true final mass. 90\% of subhalos can be predicted accurately, given their prediction requires accuracy to only \textpm 20\% of their final mass. Almost all subhalos can have their masses predicted to within \textpm 50\% of their final fractional mass, although it's worth noting that this encompasses the full range of losing none to all of the original subhalo mass. 
+
+The three parameters needed before prediction accuracy levels off with the addition of more parameters are: the virial radius of the subhalo, the initial scale factor, and the subhalos orbital eccentricity. Again, given the ordering from the feature selection methods discussed above, these parameters show the quickest gain of information with the quickest leveling off of additional accuracy, even given a model allowed to select any of the full twenty parameter set. Adding these first three parameters results in an increase of \textbf{INSERT NUMBER}, \textbf{INSERT NUMBER}, and  \textbf{INSERT NUMBER} accuracy percentage gain, respectively. Within the parameter spaces of the four top parameters, we show in Figure \ref{fig:massloss_contours} where the best and worst 25\% of predicted subhalos lie. Most of the best-predicted subhalos are those that enter their host closer to z=0, likely because those lose much less mass. Larger subhalos, given by larger virial radii, also appear more difficult to predict than their smaller counterparts.  
+
 \begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/massloss_predictions}
-    \caption{Mass loss.}
+    \caption{Accuracy of model's predictions, for both the training and testing sets, when predicting mass loss. Percentage of accurate predictions is shown on the y-axis. The x-axis shows parameters used to train the model. For each point, the model was trained using all parameters to the left of that point on the y-axis. The solid line shows the accuracy on the test set, while the dashed line shows the accuracy on the set the model was trained on. Different colored lines show the different tolerance values used to define accuracy. For a complete definition of this accuracy metric, see text.}
     \label{fig:massloss_predictions}
 \end{figure}
-    \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
-	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
+
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\textwidth]{Figures/massloss_contours}
-    \caption{Mass loss contours.}
+    \caption{Contours of the top and bottom 25\% accuracies of predicted subhalos, in the two-dimensional spaces of the four most important features. Blue contours show the best predicted subhalos, and red contours show the worst predicted subhalos. Contours are divided into 5 sections, with 20\% of subhalos lying within the inner most contour, 40\% lying within the second innermost contour, and so on. The outermost contour is not shaded as to more clearly show the contour regions.}
     \label{fig:massloss_contours}
 \end{figure*}
-\end{itemize}
 
 \subsection{Final Position}
 \label{sec:position}
-For only subhalos that survive until redshift zero without being disrupted, we try to predict where in their host halo they end up at redshift zero.
-\begin{itemize}
-	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor. What accuracy we are trying to get.
-	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
+For only subhalos that survive until z=0 without being disrupted, we next predict the final position of the subhalo at z=0, relative to the center of the host halo, using a gradient boosting regressor. To determine the accuracy of the model, we define an accuracy metric, using the the difference between true and predicted fractional distance from host center. A subhalo is considered to be accurately predicted given:
+\begin{equation}
+    \label{eq:position}
+    \frac{|d_\textsubscript{rel,f,true} - d_\textsubscript{rel,f,pred}|}{R_\textsubscript{vir,host,f}} - \frac{2R\textsubscript{soft}}{R_\textsubscript{vir,host,f}} \leq tol
+\end{equation}
+Where \texit{tol} is some tolerance value which determines what difference in fractional distance from host center is acceptable as accurate. The second term in the equation is an additional tolerance, to account for uncertainty in positions due to the softening length.
+
+Figure \ref{fig:position_predictions} shows the accuracy of best-fit model, when trained using all and increasingly small subsets of the feature parameters. Because accuracy of this model depends on the selected tolerance value, we show the accuracy given several different choices of tolerance. Again, the training set generally does better than the test set, for all tolerances, due to slight  overfitting. For final position, it appears that more parameters are needed to reach maximum accuracy, with the first five given parameters being used for predictions before accuracy levels off. For final position, predictions are slightly worse than for mass loss. 50\% of subhalos can be predicted to \textpm 5\% of their true fractional distance. 90\% of subhalos can be predicted accurately, given their prediction requires accuracy to only \textpm 20\% of their final position. Almost all subhalos can have their final position predicted to within \textpm 50\% of their final fractional mass. Again, we note that this encompasses the full range of the subhalo lying anywhere within the host.
+
+The five parameters needed before prediction accuracy levels off with the addition of more parameters are: the virial radius of the host halo, the initial scale factor, the mass ratio between the sub and host halo, the subhalos orbital eccentricity, and the relative velocity with which the subhalo enters. Given the ordering from the feature selection methods discussed above, it appears that these parameters were chosen to be quite important, although the mass ratio provides less accuracy gain than some of the other, later-chosen parameters. Adding these first five parameters results in an increase of \textbf{INSERT NUMBER}, \textbf{INSERT NUMBER}, \textbf{INSERT NUMBER}, \textbf{INSERT NUMBER}, and  \textbf{INSERT NUMBER} accuracy percentage gain, respectively. Within the parameter spaces of the four top parameters, we show in Figure \ref{fig:position_contours} where the best and worst 25\% of predicted subhalos lie. Most of the best-predicted subhalos are those that enter their host closer to z=0, likely because those have less time to move deep into the host and have their orbits altered as much. 
+
 \begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/position_predictions}
-    \caption{Position.}
+    \caption{Same as Figure \ref{fig:massloss_predictions}, but for the final position prediction.}
     \label{fig:position_predictions}
 \end{figure}
-    \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
-	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
+
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\textwidth]{Figures/position_contours}
-    \caption{Position contours.}
+    \caption{Same as \ref{fig:massloss_contours}, but for the final position parameters and predictions.}
     \label{fig:position_contours}
 \end{figure*}
-\end{itemize}
 
 \subsection{Merge Time}
 \label{sec:merge time}
-For only subhalos that have merged before redshift zero, we try to predict how long the merger takes.
-\begin{itemize}
-	\item \texit{Describe the metric for accuracy.} What the different tolerances mean, show the equation that defines accurate and explain why that metric is used. Explain the fudge factor. What accuracy we are trying to get.
-	\item Figure that shows, adding parameters, how well we do. Shown in figure \ref{fig:massloss_predictions}. Talk about when it levels off and how many parameters it takes. Discussion of other features like how it seems to go up an down for some parameters being added and how much that variability matters (how much noise is typical).
+For only subhalos that have merged before z=0, we finally predict the amount of elapsed time between the subhalos entry and subsequent merging, using a gradient boosting regressor. To determine the accuracy of the model, we define an accuracy metric, using the the difference between true and predicted number of crossing times. A subhalo is considered to be accurately predicted given:
+\begin{equation}
+    \label{eq:position}
+    \frac{|t_\textsubscript{f,true} - t_\textsubscript{f,pred}|}{t_\textsubscript{cross,f,true}} \leq tol
+\end{equation}
+Where \texit{tol} is some tolerance value which determines to witihin how many crossing times a prediction is considered to be accurate.
+
+Figure \ref{fig:time_predictions} shows the accuracy of best-fit model, when trained using all and increasingly small subsets of the feature parameters. Because accuracy of this model depends on the selected tolerance value, we show the accuracy given several different choices of tolerance. Again, the training set generally does better than the test set, for all tolerances, due to slight  overfitting. To predict merging time, again only three parameters appear to be necessary to reach maximum accuracy. 50\% of subhalos can be predicted to within half of a crossing time. 90\% of subhalos can be predicted accurately, given their prediction requires accuracy to only within 1.5 crossing times. All subhalos can have their merging time predicted to within five crossing times. Again, we emphasize that 5 crossing times is typically around 1 billion years.
+
+The three parameters needed before prediction accuracy levels off with the addition of more parameters are: the initial scale factor, the subhalos orbital eccentricity, and the mass ratio between the sub and host halo. Adding these first three parameters results in an increase of \textbf{INSERT NUMBER}, \textbf{INSERT NUMBER}, and  \textbf{INSERT NUMBER} accuracy percentage gain, respectively. Within the parameter spaces of the four top parameters, we show in Figure \ref{fig:position_contours} where the best and worst 25\% of predicted subhalos lie. Most of the best-predicted subhalos have masses more similar to their host halos. The worst-predicted subhalos also appear to have lower concentrations than their better-predicted counterparts. 
+
 \begin{figure}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\columnwidth]{Figures/time_predictions}
-    \caption{Merge time.}
+    \caption{Same as Figure \ref{fig:massloss_predictions}, but for the final position prediction.}
     \label{fig:time_predictions}
 \end{figure}
-    \item Talk about the different tolerances and how we choose to report our final accuracy. What the different tolerances show.
-	\item The parameters: the best combination of parameters, and how many were needed and how much information adding each of them gives you additionally. Whether or not those agree with feature selection methods that we used. 
+
 \begin{figure*}
 	% To include a figure from a file named example.*
 	% Allowable file formats are eps or ps if compiling using latex
 	% or pdf, png, jpg if compiling using pdflatex
 	\includegraphics[width=\textwidth]{Figures/time_contours}
-    \caption{Time contours.}
+    \caption{Same as \ref{fig:massloss_contours}, but for the merge time parameters and predictions.}
     \label{fig:time_contours}
 \end{figure*}
-\end{itemize}
-
-\subsection{Some Useful LATEX Stuff - Not part of paper}
-Just some stuff that came with the template that I'll probably need to reference at some point when I have to add Figures and equations and all that to the above sections.
-
-This is how I would enter math or an equation e.g. $2\times3=6$
-or $v=220$\,km\,s$^{-1}$. A numbered equation:
-
-\begin{equation}
-    x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}.
-	\label{eq:quadratic}
-\end{equation}
-Refer to as equation~(\ref{eq:quadratic}).
-
-Refer to figures as e.g. Fig.~\ref{fig:example_figure}, and tables as
-e.g. Table~\ref{tab:example_table}.
-
-This is how you'd have a little code-text thing: \texttt{mnras\_sample.tex}.
-And this is how I'd cite stuff when I finally read some papers: \citet{Others2013}, \citep[e.g.][]{Author2012}.
 
 
+\section{Discussion and Summary}
+\label{sec:Conclusion}
 
-\section{Discussion and Conclusions}
+In this paper, we have used machine learning algorithms to fit a model that predicts the survivial, mass loss, final position, and merge time of a subhalo from parameters taken right at the time of its infall. Our goals were to better understand to what degree these final outcomes are due to stochasticity in subhalo evolution versus real, physically-motivated processes that could be consistently, analytically predicted. From predictions based on these models, we have found:
 \begin{itemize}
-	\item \texit{Discuss the parameters that were chosen to be important.} Which seem to be important across all of the predicted quantities and which might be more surprising or less intuitive. Some physically motivated speculation as to why those chosen make or don't make sense?
-    \item What went wrong for the outcomes that can't be predicted very well. Show/Discuss specific cases where outcomes are predicted well/not well? Show the contour plots here? Talk about if there are any common spaces within those contours that are consistently not predicted well. Like things in a mid-scale range (.6) being predicted poorly for pretty much anything you want to know. Is there anything common amongst the halos that are predicted poorly for different parameters (are the same haloes or types of halos predicted poorly across multiple outcomes).
-    \item \texit{Possible missing parameters.} Anything else that might contribute to the predictions that we haven't included. What do the distributions in parameter space tell us about the ML failing to capture information vs the outcomes having some inherent randomness.
-    \item \texit{Robustness of the machine learning results.} Investigation of data size to show that we weren't constrained by amount of data. Cost curves during training? ROC curves? Is it possible the model could have done better given a different tuning/training of the ML algorithms? Discussion of possible underfitting/overfitting of the models. Room for improvement in the ML methodology.
-    \item \textit{Possible uses or implications of the models for simulation.} What does this inherent stochasticity seem to point to? What can we say about the results of simulations or how they do their calculations of these types of merging interactions based on the uncertainty in the outcomes of the objects? How much can we expect this type of uncertainty and is it a cause for concern.
-    \item \textit{Possible use/implications for observation} Is there anything we can say about distributions that we can expect around the MW or other galaxies. Particularly for survival which we obviously predict much better than the other quantities.
-    \item Discussion of future works related to this??
-
+    \item Subhalo survival can be predicted remarkably well, with 96.5\% of our sample being correctly predicted as surviving or disrupting. These predictions need only three initial parameters: the scale factor at the time of the start of the interaction, the mass ratio between the subhalo and its host, and the orbital eccentricity, but the initial scale factor is by far the most influential of these parameters. Subhalos with both late and early entry times are easiest to predict, while those entering their host halos at a = ~.65 are much more difficult.
+    \item Subhalo mass loss is, a generally stochastic process. Although 60\% of our sample can be correctly predicted to within 5\% of their initial masses, an accuracy of 90\% is only achieved given predictions are accurate to within 20\% of their initial mass. These predictions also need only three initial parameters: the virial radius of the subhalo, the scale factor at the time of the start of the interaction, and the orbital eccentricity. Smaller subhalos with late entry times are easier to predict than their larger or earlier counterparts.
+    \item Subhalo final locations are also difficult to predict. 50\% of our sample can be correctly predicted to within \textpm 5\% of their the host virial radius, but an accuracy of 90\% is only achieved given predictions are accurate to within 20\% of the host virial radius. These predictions need five initial parameters: the virial radius of the host halo, the scale factor at the time of the start of the interaction, the mass ratio between the sub and host halo, the orbital eccentricity, and the initial relative velocity.
+    \item Subhalo merging timescales are also difficult to predict. 50\% of our sample can be correctly predicted to within half of their initial crossing time, but an accuracy of 90\% is only achieved given predictions are accurate to within 1.5 crossing times. These predictions again need only three parameters: the scale factor at the time of the start of the interaction, the orbital eccentricity, and the mass ratio between the sub and host halo. 
 \end{itemize}
+
+What went wrong for the outcomes that can't be predicted very well. Show/Discuss specific cases where outcomes are predicted well/not well? Show the contour plots here? Talk about if there are any common spaces within those contours that are consistently not predicted well. Like things in a mid-scale range (.6) being predicted poorly for pretty much anything you want to know. Is there anything common amongst the halos that are predicted poorly for different parameters (are the same haloes or types of halos predicted poorly across multiple outcomes).
+
+\texit{Possible missing parameters.} Anything else that might contribute to the predictions that we haven't included. What do the distributions in parameter space tell us about the ML failing to capture information vs the outcomes having some inherent randomness.
+
+\texit{Robustness of the machine learning results.} Investigation of data size to show that we weren't constrained by amount of data. Cost curves during training? ROC curves? Is it possible the model could have done better given a different tuning/training of the ML algorithms? Discussion of possible underfitting/overfitting of the models. Room for improvement in the ML methodology.
+
+\textit{Possible uses or implications of the models for simulation.} What does this inherent stochasticity seem to point to? What can we say about the results of simulations or how they do their calculations of these types of merging interactions based on the uncertainty in the outcomes of the objects? How much can we expect this type of uncertainty and is it a cause for concern.
+
+\textit{Possible use/implications for observation} Is there anything we can say about distributions that we can expect around the MW or other galaxies. Particularly for survival which we obviously predict much better than the other quantities.
+
+Discussion of future works related to this??
+
+
+\begin{figure*}
+	% To include a figure from a file named example.*
+	% Allowable file formats are eps or ps if compiling using latex
+	% or pdf, png, jpg if compiling using pdflatex
+	\includegraphics[width=\textwidth]{Figures/stdev_bestSpaces}
+    \caption{Same as Figure \ref{fig:bestSpaces}, but each hexagonal bin contains the average standard deviation, normalized by the average value within that bin.}
+    \label{fig:stdev_bestSpaces}
+\end{figure*}
 
 \section*{Acknowledgements}
 
@@ -405,16 +433,25 @@ I would like to thank the academy, ...
 % Alternatively you could enter them by hand, like this:
 % This method is tedious and prone to error if you have lots of references
 \begin{thebibliography}{99}
-\bibitem[\protect\citeauthoryear{Author}{2012}]{Author2012}
-Author A.~N., 2013, Journal of Improbable Astronomy, 1, 1
-\bibitem[\protect\citeauthoryear{Others}{2013}]{Others2013}
-Others S., 2012, Journal of Interesting Stuff, 17, 198
-\bibitem[\protect\citeauthoryear{Springel}{2013}]{Springel2013}
-Springel A.~N., OtherStuff NotReal. 2013, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{Spergel}{2013}]{Spergel2003}
+Spergel A.~N., OtherStuff NotReal. 2003, Journal of Improbable Astronomy, 1, 1
 \bibitem[\protect\citeauthoryear{Behroozi}{2013}]{Behroozi2013b}
 Behroozi A.~N., OtherStuff NotReal. 2013, Journal of Improbable Astronomy, 1, 1
-\bibitem[\protect\citeauthoryear{van den Bosch}{2018}]{VDB2018}
+\bibitem[\protect\citeauthoryear{van den Bosch et al.}{2018}]{VDB2018}
 van den Bosch A.~N., OtherStuff NotReal. 2018, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{van den Bosch}{2017}]{VDB2017}
+van den Bosch A.~N., OtherStuff NotReal. 2017, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{van den Bosch et al.}{2016}]{VDB2016}
+van den Bosch A.~N., OtherStuff NotReal. 2016, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{Avila et al.}{2013}]{Avila2013}
+Avila A.~N., OtherStuff NotReal. 2016, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{Knebe et al.}{2011}]{Knebe2011}
+Knebe A.~N., OtherStuff NotReal. 2016, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{Srisawat et
+al.}{2013}]{Srisawat2013}
+Srisawat A.~N., OtherStuff NotReal. 2016, Journal of Improbable Astronomy, 1, 1
+\bibitem[\protect\citeauthoryear{Nadler et al.}{2017}]{Nadler2017}
+Nadler A.~N., OtherStuff NotReal. 2016, Journal of Improbable Astronomy, 1, 1
 \end{thebibliography}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
